@@ -5,7 +5,7 @@ import axios from "axios";
 import cookieParser from "cookie-parser";
 import { generateRandomString } from "./utils";
 
-// TODO: Setup envalid
+// TODO: Setup Envalid
 const port = process.env.PORT || 1965;
 const client_id = process.env.CLIENT_ID;
 const client_secret = process.env.CLIENT_SECRET;
