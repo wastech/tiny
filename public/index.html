@@ -47,20 +47,31 @@
       <div class="media">
         <div class="media-body">
           <h4>Tracks in Playlist: <b>3keyQsnosoctNDRlREKWKb</b></h4>
-          <ul class="list-group">
+          <ul id="track-list" class="list-group">
             {{#each items}}
-              <li class="list-group-item">{{this.track.name}}</li>
+              <li class="list-group-item">
+                <span>{{this.track.name}} - </span>
+                {{#each this.track.artists}}
+                  <span>{{name}}</span>
+                {{/each}}
+                <button
+                  type="button"
+                  class="btn btn-secondary"
+                  id="{{@index}}"
+                >
+                  Get Deezer Version
+                </button>
+              </li>
             {{/each}}
           </ul>
         </div>
       </div>
     </script>
 
-  <script src="//cdnjs.cloudflare.com/ajax/libs/handlebars.js/2.0.0-alpha.1/handlebars.min.js"></script>
-  <script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.7.6/handlebars.min.js"></script>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.5.0/jquery.min.js"></script>
   <script>
     (function () {
-
       /**
        * Obtains parameters from the hash of the URL
        * @return Object
@@ -73,6 +84,24 @@
           hashParams[e[1]] = decodeURIComponent(e[2]);
         }
         return hashParams;
+      }
+
+      function handleButtonClick(e) {
+        if (e.target.nodeName === "BUTTON") {
+          e.stopPropagation();
+          var track = window.playlist.items[e.target.id].track;
+          console.log("track", track);
+          console.log("handle click", e);
+          $.ajax({
+            url: "https://api.deezer.com/search",
+            data: {
+              q: `artist:\"${track.artists[0].name}\" track:\"${track.name}\"`
+            },
+            success: function (response) {
+              console.log(response);
+            }
+          });
+        }
       }
 
       var playlistSource = document.getElementById('playlist-template').innerHTML,
@@ -94,9 +123,13 @@
             url: `https://api.spotify.com/v1/playlists/${playlist_id}/tracks`,
             headers: { 'Authorization': 'Bearer ' + access_token },
             success: function (response) {
+              window.playlist = response;
               playlistPlaceholder.innerHTML = playlistTemplate(response);
               $('#login').hide();
               $('#loggedin').show();
+
+              var trackList = document.getElementById("track-list");
+              trackList.addEventListener("click", handleButtonClick);
             }
           });
         } else {
