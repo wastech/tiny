@@ -15,6 +15,10 @@
       display: none;
     }
 
+    .section {
+      margin-top: 50px;
+    }
+
     .text-overflow {
       overflow: hidden;
       text-overflow: ellipsis;
@@ -35,38 +39,43 @@
       </div>
     </div>
     <div id="loggedin">
+      <form id="playlist-form">
+        <div class="form-group">
+          <label for="exampleInputEmail1">Spotify playlist</label>
+          <input type="text" class="form-control" aria-describedby="textHelp">
+          <small id="textHelp" class="form-text text-muted">Playlist url</small>
+        </div>
+        <button type="submit" class="btn btn-primary">Submit</button>
+      </form>
       <div id="playlists">
       </div>
     </div>
   </div>
 
   <script id="playlist-template" type="text/x-handlebars-template">
-      <div class="alert alert-primary" role="alert">
-        Log in success!
+    <div class="section media">
+      <div class="media-body">
+        <h4>Tracks in Playlist</h4>
+        <ul id="track-list" class="list-group">
+          {{#each items}}
+            <li class="list-group-item">
+              <span>{{this.track.name}} - </span>
+              {{#each this.track.artists}}
+                <span>{{name}}</span>
+              {{/each}}
+              <button
+                type="button"
+                class="btn btn-secondary"
+                id="{{@index}}"
+              >
+                Get Deezer Version
+              </button>
+            </li>
+          {{/each}}
+        </ul>
       </div>
-      <div class="media">
-        <div class="media-body">
-          <h4>Tracks in Playlist: <b>3keyQsnosoctNDRlREKWKb</b></h4>
-          <ul id="track-list" class="list-group">
-            {{#each items}}
-              <li class="list-group-item">
-                <span>{{this.track.name}} - </span>
-                {{#each this.track.artists}}
-                  <span>{{name}}</span>
-                {{/each}}
-                <button
-                  type="button"
-                  class="btn btn-secondary"
-                  id="{{@index}}"
-                >
-                  Get Deezer Version
-                </button>
-              </li>
-            {{/each}}
-          </ul>
-        </div>
-      </div>
-    </script>
+    </div>
+  </script>
 
   <script src="//cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.7.6/handlebars.min.js"></script>
   <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.5.0/jquery.min.js"></script>
@@ -104,6 +113,39 @@
         }
       }
 
+      function getSpotifyPlaylist(e) {
+        if (e.target.nodeName === "BUTTON") {
+          e.stopPropagation();
+
+          var playlistUrl = $("input[type=text]").val();
+
+          if (!playlistUrl) {
+            return;
+          }
+
+          var url = new URL(playlistUrl);
+          var playlistId = url.pathname.split("playlist/")[1]
+
+          if (!playlistId) {
+            return;
+          }
+
+          $.ajax({
+            url: `https://api.spotify.com/v1/playlists/${playlistId}/tracks`,
+            headers: { 'Authorization': 'Bearer ' + access_token },
+            success: function (response) {
+              window.playlist = response;
+              playlistPlaceholder.innerHTML = playlistTemplate(response);
+              $('#login').hide();
+              $('#loggedin').show();
+
+              var trackList = document.getElementById("track-list");
+              trackList.addEventListener("click", handleButtonClick);
+            }
+          });
+        }
+      }
+
       var playlistSource = document.getElementById('playlist-template').innerHTML,
         playlistTemplate = Handlebars.compile(playlistSource),
         playlistPlaceholder = document.getElementById('playlists');
@@ -118,26 +160,21 @@
         alert('There was an error during the authentication');
       } else {
         if (access_token) {
-          var playlist_id = "3keyQsnosoctNDRlREKWKb";
-          $.ajax({
-            url: `https://api.spotify.com/v1/playlists/${playlist_id}/tracks`,
-            headers: { 'Authorization': 'Bearer ' + access_token },
-            success: function (response) {
-              window.playlist = response;
-              playlistPlaceholder.innerHTML = playlistTemplate(response);
-              $('#login').hide();
-              $('#loggedin').show();
-
-              var trackList = document.getElementById("track-list");
-              trackList.addEventListener("click", handleButtonClick);
-            }
-          });
+          $('#login').hide();
+          $('#loggedin').show();
         } else {
           // render initial screen
           $('#login').show();
           $('#loggedin').hide();
         }
       }
+
+      window.addEventListener('DOMContentLoaded', (event) => {
+        console.log('DOM fully loaded and parsed');
+
+        var playlistForm = document.getElementById("playlist-form");
+        playlistForm.addEventListener("click", getSpotifyPlaylist);
+      });
     })();
   </script>
 </body>
