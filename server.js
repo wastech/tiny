@@ -27,37 +27,37 @@ app.get("/login", (req, res) => {
 
   res.redirect(
     "https://accounts.spotify.com/authorize?" +
-      querystring.stringify({
-        response_type: "code",
-        client_id: client_id,
-        scope: scope,
-        redirect_uri: redirect_uri,
-        state: state,
-      })
+    querystring.stringify({
+      response_type: "code",
+      client_id: client_id,
+      scope: scope,
+      redirect_uri: redirect_uri,
+      state: state,
+    })
   );
 });
 
-app.get("/callback", async (req, res) => {
-  const { state = null, code = null } = req.query;
-  const storedState = req.cookies ? req.cookies[stateKey] : null;
+app.get("/callback", async(req, res) => {
+      const { state = null, code = null } = req.query;
+      const storedState = req.cookies ? req.cookies[stateKey] : null;
 
-  if (state === null || state !== storedState) {
-    return res.redirect(
-      `/#${querystring.stringify({ error: "state_mismatch" })}`
-    );
-  }
+      if (state === null || state !== storedState) {
+        return res.redirect(
+          `/#${querystring.stringify({ error: "state_mismatch" })}`
+        );
+      }
 
-  res.clearCookie(stateKey);
-  const options = {
-    method: "POST",
-    url: "https://accounts.spotify.com/api/token",
-    data: querystring.stringify({
-      code: code,
-      redirect_uri: redirect_uri,
-      grant_type: "authorization_code",
-    }),
-    headers: {
-      Authorization: `Basic ${Buffer.from(
+      res.clearCookie(stateKey);
+      const options = {
+          method: "POST",
+          url: "https://accounts.spotify.com/api/token",
+          data: querystring.stringify({
+            code: code,
+            redirect_uri: redirect_uri,
+            grant_type: "authorization_code",
+          }),
+          headers: {
+            Authorization: `Basic ${Buffer.from(
         `${client_id}:${client_secret}`
       ).toString("base64")}`,
     },

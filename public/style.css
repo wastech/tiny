@@ -1,0 +1,19 @@
+body {
+  margin-top: 1rem;
+}
+
+#login,
+#loggedin {
+  display: none;
+}
+
+.section {
+  margin-top: 50px;
+}
+
+.text-overflow {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  width: 500px;
+}
