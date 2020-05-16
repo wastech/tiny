@@ -16,7 +16,7 @@ const app = express();
 
 app
   .use(express.static(`${__dirname}/public`))
-  .use(morganLogger("combined"))
+  .use(morganLogger("dev"))
   .use(cookieParser())
   .listen(port, () => console.log(`App running on port: ${port}`));
 
