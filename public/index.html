@@ -16,7 +16,7 @@
       <div class="header">
         <h1 class="display-4">tiny</h1>
         <p class="lead">Spotify <-> Deezer Playlist Converter</p>
-        <hr class="my-4">
+        <hr class="my-4" />
       </div>
       <div id="login">
         <a class="btn btn-primary btn-lg" href="/login">Log in with Spotify</a>
@@ -25,32 +25,39 @@
         <form id="playlist-form">
           <div class="form-group">
             <label for="exampleInputEmail1">Spotify playlist</label>
-            <input type="text" class="form-control" aria-describedby="textHelp">
-            <small id="textHelp" class="form-text text-muted">Playlist url</small>
+            <input
+              type="text"
+              class="form-control"
+              aria-describedby="textHelp"
+            />
+            <small id="textHelp" class="form-text text-muted"
+              >Playlist url</small
+            >
           </div>
           <button type="submit" class="btn btn-primary">Submit</button>
         </form>
-        <div id="playlists">
-        </div>
+        <div id="playlists"></div>
       </div>
     </div>
 
     <script id="playlist-template" type="text/x-handlebars-template">
       <div class="section media">
         <div class="media-body">
-          <h4>Tracks in Playlist</h4>
+          <h4>
+            Tracks in Playlist
+          </h4>
           <ul id="track-list" class="list-group">
             {{#each items}}
               <li class="list-group-item">
-                <span>{{this.track.name}} - </span>
+                <span>
+                  {{this.track.name}} -
+                </span>
                 {{#each this.track.artists}}
-                  <span>{{name}}</span>
+                  <span>
+                    {{name}}
+                  </span>
                 {{/each}}
-                <button
-                  type="button"
-                  class="btn btn-secondary"
-                  id="{{@index}}"
-                >
+                <button type="button" class="btn btn-secondary" id="{{@index}}">
                   Get Deezer Version
                 </button>
               </li>
@@ -61,7 +68,7 @@
     </script>
 
     <script src="//cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.7.6/handlebars.min.js"></script>
-    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.5.0/jquery.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.5.0/jquery.js"></script>
     <script src="script.js"></script>
   </body>
 </html>
