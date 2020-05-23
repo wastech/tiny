@@ -2,15 +2,23 @@ import express from "express";
 import morganLogger from "morgan";
 import querystring from "querystring";
 import axios from "axios";
+import envalid, { str, num, url } from 'envalid'
 import cookieParser from "cookie-parser";
 import { generateRandomString } from "./utils";
 
-// TODO: Setup Envalid
-const port = process.env.PORT || 1965;
-const client_id = process.env.CLIENT_ID;
-const client_secret = process.env.CLIENT_SECRET;
-const redirect_uri = process.env.REDIRECT_URI;
-const stateKey = process.env.SPOTIFY_STATE_KEY || "spotify_auth_state";
+const cleanEnv = envalid.cleanEnv(process.env, {
+  PORT: num({ default: 1965 }),
+  CLIENT_ID: str(),
+  CLIENT_SECRET: str(),
+  REDIRECT_URI: url(),
+  SPOTIFY_STATE_KEY: str({ devDefault: "spotify_auth_state" }),
+});
+
+const port = cleanEnv.PORT || 1965;
+const client_id = cleanEnv.CLIENT_ID;
+const client_secret = cleanEnv.CLIENT_SECRET;
+const redirect_uri = cleanEnv.REDIRECT_URI;
+const stateKey = cleanEnv.SPOTIFY_STATE_KEY;
 
 const app = express();
 
