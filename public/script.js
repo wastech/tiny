@@ -33,12 +33,12 @@
     }
   }
 
-  var playlistSource = document.getElementById("playlist-template").innerHTML,
-    playlistTemplate = Handlebars.compile(playlistSource),
-    playlistPlaceholder = document.getElementById("playlists"),
-    params = getHashParams(),
-    { access_token } = params,
-    { error } = params;
+  const playlistSource = document.getElementById("playlist-template").innerHTML;
+  const playlistTemplate = Handlebars.compile(playlistSource);
+  const playlistPlaceholder = document.getElementById("playlists");
+  const params = getHashParams();
+  const { access_token } = params;
+  const { error } = params;
 
   if (error) {
     alert("There was an error during the authentication");
@@ -61,8 +61,8 @@
       return;
     }
 
-    const url = new URL(playlistUrl),
-      playlistId = url.pathname.split("playlist/")[1];
+    const url = new URL(playlistUrl);
+    const playlistId = url.pathname.split("playlist/")[1];
 
     if (!playlistId) {
       return;
