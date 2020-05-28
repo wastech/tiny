@@ -28,7 +28,7 @@ app.get("/login", (req, res) => {
   res.cookie(stateKey, state);
 
   res.redirect(
-    `https://accounts.spotify.com/authorize?"${querystring.stringify({
+    `https://accounts.spotify.com/authorize?${querystring.stringify({
       client_id: clientId,
       redirect_uri: redirectUri,
       response_type: "code",
