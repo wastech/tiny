@@ -3,7 +3,7 @@ import axios from "axios";
 import { generateRandomString } from "./utils";
 import querystring from "querystring";
 import config from "./config";
-import path from "path";
+import fs from 'fs';
 
 const router = express.Router();
 
@@ -33,9 +33,14 @@ router.get("/login", (req, res) => {
 router.get("/callback", async (req, res) => {
   const { state = null, code = null } = req.query;
   const storedState = req.cookies ? req.cookies[stateKey] : null;
+
   if (state === null || state !== storedState) {
-    return res.sendFile("404.html", {
-      root: path.join(__dirname, "./"),
+    fs.readFile("/error", function (err, data, next) {
+      if (err) {
+        next('error'); // Pass errors to Express.
+      } else {
+        res.send(data);
+      }
     });
   }
 
