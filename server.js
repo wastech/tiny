@@ -3,6 +3,7 @@ import cookieParser from "cookie-parser";
 import express from "express";
 import morganLogger from "morgan";
 import router from "./route";
+const path = require("path");
 
 const { PORT: port } = config;
 
