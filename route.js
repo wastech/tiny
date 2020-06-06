@@ -3,7 +3,7 @@ import axios from "axios";
 import { generateRandomString } from "./utils";
 import querystring from "querystring";
 import config from "./config";
-const path = require("path");
+import path from "path";
 
 const router = express.Router();
 
@@ -33,7 +33,6 @@ router.get("/login", (req, res) => {
 router.get("/callback", async (req, res) => {
   const { state = null, code = null } = req.query;
   const storedState = req.cookies ? req.cookies[stateKey] : null;
-
   if (state === null || state !== storedState) {
     return res.sendFile("404.html", {
       root: path.join(__dirname, "./"),
