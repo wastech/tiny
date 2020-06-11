@@ -29,7 +29,6 @@ router.get("/login", (req, res) => {
   );
 });
 
-
 router.get("/callback", async (req, res) => {
   const { state = null, code = null } = req.query;
   const storedState = req.cookies ? req.cookies[stateKey] : null;
