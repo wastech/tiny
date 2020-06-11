@@ -3,7 +3,6 @@ import axios from "axios";
 import { generateRandomString } from "./utils";
 import querystring from "querystring";
 import config from "./config";
-import fs from 'fs';
 
 const router = express.Router();
 
@@ -16,7 +15,7 @@ const {
 
 router.get("/login", (req, res) => {
   const scope = "user-read-private user-read-email";
-  const state = null;
+  const state = generateRandomString();
   res.cookie(stateKey, state);
 
   res.redirect(
@@ -30,18 +29,14 @@ router.get("/login", (req, res) => {
   );
 });
 
-router.get("/callback", async (req, res) => {
+router.get("/callback", async (req, res, next) => {
   const { state = null, code = null } = req.query;
   const storedState = req.cookies ? req.cookies[stateKey] : null;
 
   if (state === null || state !== storedState) {
-    fs.readFile("/error", function (err, data, next) {
-      if (err) {
-        next('error'); // Pass errors to Express.
-      } else {
-        res.send(data);
-      }
-    });
+    return res.redirect(
+      `/#${querystring.stringify({ error: "state_mismatch" })}`
+    );
   }
 
   res.clearCookie(stateKey);
