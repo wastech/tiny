@@ -29,14 +29,12 @@ router.get("/login", (req, res) => {
   );
 });
 
-router.get("/callback", async (req, res) => {
+router.get("/callback", async (req, res, next) => {
   const { state = null, code = null } = req.query;
   const storedState = req.cookies ? req.cookies[stateKey] : null;
 
   if (state === null || state !== storedState) {
-    return res.redirect(
-      `/#${querystring.stringify({ error: "state_mismatch" })}`
-    );
+    next("err");
   }
 
   res.clearCookie(stateKey);
