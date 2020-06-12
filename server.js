@@ -14,7 +14,6 @@ app
   .use(cookieParser())
   .use("/auth", router)
   .use((err, req, res, next) => {
-    console.log("err", err);
     res.redirect("/error.html");
   })
   .listen(port, () => console.log(`App running on port: ${port}`));
